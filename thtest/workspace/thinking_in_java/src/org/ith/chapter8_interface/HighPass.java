@@ -1,0 +1,15 @@
+package org.ith.chapter8_interface;
+
+public class HighPass extends Filter
+{
+	double cutoff;
+	public HighPass(double cutoff)
+	{
+		this.cutoff = cutoff;
+	}
+	
+	public Waveform process(Waveform input)
+	{
+		return input;
+	}
+}

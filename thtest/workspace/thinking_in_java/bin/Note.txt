@@ -1,0 +1,950 @@
+
+----------------------2013-05-27------------------------
+Java 为 TCP 协议提供了两个类：Socket 类和 ServerSocket 类。一个 Socket 实例代表了
+TCP 连接的一端。一个 TCP 连接（TCP connection）是一条抽象的双向信道，两端分别由 IP
+地址和端口号确定。在开始通信之前，要建立一个 TCP 连接，这需要先由客户端 TCP 向服
+务器端 TCP 发送连接请求。ServerSocket 实例则监听 TCP 连接请求，并为每个请求创建新
+的 Socket 实例。也就是说，服务器端要同时处理 ServerSocket 实例和 Socket 实例，而客户
+端只需要使用 Socket 实例。
+
+客户端向服务器发起连接请求后，就被动地等待服务器的响应。
+典型的 TCP 客户端要经过下面三步： 
+1. 创建一个 Socket 实例：构造器向指定的远程主机和端口建立一个 TCP 连接。 
+2. 通过套接字的输入输出流（I/O streams）进行通信：一个 Socket 连接实例包括一个
+   InputStream 和一个 OutputStream，它们的用法同于其他 Java 输入输出流。
+3. 使用 Socket 类的 close()方法关闭连接.
+
+TCP协议并不能确定在read()和write()方法中所发送信
+息的界限，也就是说，虽然我们只用了一个 write()方法来发送回馈字符串，回馈服务器也可
+能从多个块（chunks）中接受该信息。即使回馈字符串在服务器上存于一个块中，在返回的
+时候，也可能被 TCP 协议分割成多个部分。对于初学者来说，最常见的错误就是认为由一
+个 write()方法发送的数据总是会由一个 read()方法来接收。 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------2013-05-27------------------------ 
+
+----------------------2013-05-23-------------------------
+在内部类不需要访问外部类的对象的时候,应该使用静态内部类.
+声明在接口中的内部类自动称为static public的.
+
+你有时候会有这种需要,在一个方法里面还有一个内部类,该内部类
+引用方法里的某个局部变量,由于是内部类要引用外部类的东西,所以那个局部变量就得
+是final的,但是如果你的需求需要该局部变量自增或自减总之就是变化呢,那么这时通常
+你就会将该局部变量定义到外部类中成为一个域.其实还有更好的解决方案,就是使用一个
+以一维数组,该数组的长度为1,也是final的.但是你在内部类中使用的确实该数组里的那个
+元素,它并不是final的,可以随便变化.哈哈.
+
+例如下面的方法:是统计compareTo方法被调用的次数
+public void count()
+{
+	Date dts = new Date[100];
+	final int[] times = new int[1];
+	
+	for(int i = 0; i < dts.length; i++)
+	{
+		dts[i] = new Date()
+		{
+				@Override public int compareTo(Date anotherDate) 
+				{
+					++times[0];
+					return super.compareTo(anotherDate);
+				};
+		};
+	}
+	
+	Arrays.sort(dts);
+	System.out.println(times[0]);	
+}
+
+代理(proxy)这是Java1.3新增加的特性.利用代理可以在运行时创建一个实现了
+一组给定接口的新类.代理类是在程序运行过程中创建的,一旦创建,就变成常规类了,
+与虚拟机中的任何其他类没有什么区别.所有的代理类都扩展于Proxy类.一个代理类
+只有一个实例域,即调用处理器,它定义在Proxy的超类中.为了履行代理对象的职责,
+所需要的任何附加数据都必须存储在调用处理器中.
+----------------------2013-05-23-------------------------
+
+
+
+
+----------------------2013-05-19-------------------------
+在java中最简单的类定义形式为:
+class ClassName
+{
+	constructor1
+	constructor2
+	...
+	method1
+	method2
+	...
+	field1
+	field2
+	...
+}
+这里编写类所采用的风格是类的方法在前面而域在后面,这种风格有益于促使
+人们更加关注接口的概念,削减对实现的注意.
+
+要想使用OOP,一定要清楚对象的三个主要特征:
+A.对象的行为(behavior)--可以对对象施加哪些操作,或可以对对象施加哪些方法.
+B.对象的状态(state)--当施加那些方法时,对象如何响应
+C.对象标识(identity)--如何辨别具有相同行为与状态的不同对象.
+
+提供getter和setter的好处在于:
+1.可以改变内部实现,除了该类的方法之外,不会想向客户端导出代码.
+2.setter方法可以执行错误检查.然而直接对域操作将无法进行检查处理.
+
+如果将域定义为static的,那么该类中只有一份这样的域.而每个对象对于所有的实例域
+却都有一份自己的拷贝.要注意的是,即使没有对象,静态域也是存在的.因为它是类相关的,
+并不属于任何独立的对象.
+
+在下面两种情况下应该使用静态方法:
+1.一个方法不需要访问对象状态,其所需参数都是通过显示参数提供的.(例如Math.pow).
+2.一个方法只需要访问类的静态域.
+
+关于方法参数的传递问题:
+值调用(call by value):表示方法接收的是调用者提供的值.
+引用调用(call by reference):表示方法接收的是调用者提供的变量地址.
+Java程序设计语言总是采用值调用.也就是说,方法得到的是所有参数值的拷贝,
+特别是,方法不能修改传递给它的任何参数变量的内容.
+
+实现一个改变对象参数状态的方法,似乎总是会迷惑你,让你以为方法调用传递
+的是引用.其实这样不对,理由很简单,方法得到的是对象引用的拷贝,对象引用
+及其他的拷贝同时引用同一个对象.实际上,对象引用进行的是值传递.
+
+一个方法不能修改一个基本数据类型的参数(即数值型和布尔型)
+一个方法可以改变一个对象参数的状态(注意这会让你误会是引用调用)
+一个方法不能实现让对象参数引用一个新的对象.(这就是你证明值传递的那个例子)
+通过下面的方法是不能实现两个Person对象的交换的.
+public static void swap(Person p1,Person p2)
+{
+	Person temp = p1;
+	p1 = p2;
+	p2 = temp;
+}
+
+方法名+参数列表=方法签名(signature)
+
+tips:没有main方法可以打印hello world
+public class Hello
+{
+	static
+	{
+		System.out.println("hello world");
+	}
+}
+
+
+编译器在编译源文件的时候是不检查目录结构的.比如说源文件中有这样的开头
+package com.mycompany;
+即使这个源文件没有在子目录com/mycompany下,也是可以进行编译的.如果它
+不依赖于其他包的话,就不会出现编译错误.但是,最终的程序是无法运行的,因为
+java虚拟机将找不到类文件.
+
+有些人认为super和this引用是类似的概念.实际上,这样说并不恰当.这是因为
+super不是一个对象的引用,你并不能将super赋值给另一个对象变量,它只是一个
+指示编译器调用超类方法的特有关键字而已.
+
+一个对象变量可以引用多种实际类型的现象被叫做多态(polymorphism).在运行时
+能够自动地选择调用哪个方法的现象称为动态绑定(dynamic binding).
+
+当你覆盖一个方法时,子类方法不能低于父类方法的可见性.
+
+一个类声明为final,只有其中的方法自动地成为final,而这并不包括域.
+
+关于强制类型转换的唯一原因是:在暂时忽略对象的实际类型之后,使用对象的全部功能.
+只能在继承层次内进行强制类型转换.
+在将超类转换成子类之前,应该使用instanceof进行检查.
+
+tips:如果x为null,进行这样的测试 
+x instanceof C(某个类型)
+这并不会产生异常,只是会返回false.之所以这样处理是因为null没有引用任何对象,
+当然也不会引用C类型的对象了.
+
+关于重写Object类的equals方法
+
+Java语言规范要求equals方法具有下面的特性:
+A.自反性:对于任何非空引用x,x.equal(x)应该返回true.
+B.对称性:对于任何引用x和y,当且仅当x.equals(y)返回true,那么y.equals(x)也应该是true.
+C.传递性:对于任何引用x,y,z,如果x.equals(y)返回true,y.equals(z)也返回ture,那么x.equals(z)也是true.
+D.一致性:如果xy引用的对象没有发生变化,那么反复调用x.equals(y)的结果应该相同.
+对于任意非空引用x,x.equals(null)应该返回false.
+
+开头必然是@Override public boolean equals(Object otherObj)
+要注意坚持使用@Override注解以及方法的参数列表必然是Object otherObj;
+@Override public boolean equals(Object otherObj)
+{
+	if(otherObj == this)
+	return true;
+	
+	if(otherObj == null)
+	return false;
+	
+	if(otherObj instanceof XXX)
+	XXX obj = (XXX)otherObj;
+	return 具体的域比较;
+}
+
+检测this和otherObj是否引用的是同一个对象,这条语句做了一个优化.
+实际上,这是一种经常采用的方式,因为计算这个等式要比你一个一个地
+比较类中的域所付出的代价要小得多.
+
+这里有一个讲究就是在判断传入的otherObj是不是XXX的类型的时候,
+你可以使用instanceof关键字也可以调用丫的getClass()方法比较.
+那到底如何取舍呢?
+如果equals的语义在每个子类中有所改变,就使用getClass检测.
+如果所有的子类都拥有统一的语义就用instanceof检测.
+如果子类能够拥有自己的相等概念,则对称性需求将强制采用getClass检测.
+如果由超类决定相等的概念,那么就可以使用instanceof操作符检测,这样就可以
+在不同的子类对象之间进行相等的比较.
+
+如果在子类中重新定义equals的话,在其中要包括super.equals(other);
+
+使用==比较基本类型域,使用equals比较对象域.
+
+tips:对于数组类型的域,推荐使用Arrays.equals方法检测数组元素是否相等.
+
+讨论:就对称性来说,当参数不属于同一个类的时候就需要仔细思考一下了.
+e.equals(m);  (e为Employee对象,m为Manager对象)
+这里的e和m对象具有相同的姓名薪水和雇佣日期,那么如果在Employee类中
+用instanceof进行检测,则返回true.然后根据对称性这就意味着当你调用
+m.equals(e)时也应该返回true.这样无疑就使得Manager类受到了束缚.
+因为这个类的equals方法必须能够用自己与任何一个Employee对象进行比较,
+而不考虑Manager类拥有的那部分特有信息.这是instanceof的缺陷吧.
+
+而有的人认为不应该使用getclass进行检测,因为这样不符合置换原则.
+
+在Employee和Manager的例子中,只要对应的域相等就认为两个对象相等.
+如果两个manager对象所对应的name,salary和hiredate均相等,而奖金
+不相等,就认为他们是不相等的.因此可以使用getcclass进行检测.
+但是,假设使用Employee的ID作为相等的检测标准,并且这个相等的概念适用
+于所有的子类,就可以使用instanceof进行检测,并且应该把Employee的equals声明为final.
+----------------------2013-05-19-------------------------
+
+
+
+----------------------2013-05-16-------------------------
+hashCode方法浅析
+如果想查找一个集合中是否包含某对象,大概程序应该怎么写呢?
+你通常是遍历该集合然后逐个对象进行比较,当发现某个元素与要查找的对象进行
+equals方法比较的结果相等时,则停止继续查找.如果一个集合中有很多个元素,那么
+就意味着你这样的方法效率就极其低了.于是就有人发明了一种哈希算法来提高从集合
+中查找元素的效率,这种方式将集合分成若干个存储区域,每个对象可以计算出一个hash码,
+可以将hash码分组,每组分别对应某个存储区域,根据一个对象的hash码就可以确定该对象应
+该存储在哪个区域.当然了,这是有条件的,那就是你的集合是hash集合.否则没有价值.
+值得注意的是,一句著名的话,当两个对象的equals比较返回true时,那么你就应该让他们
+的hashcode值相等.这句话的意思是说,因为在hash集合中,元素被存放的位置是由其hash值
+所决定的,如果两个相等的对象的hash值不同的话,那么就会被存放到不同的位置,也就是说
+你的集合将存入相等的数据,这就与实际情况相悖了.
+
+当一个对象被存储进hash集合后,就不能修改这个对象中那些参与计算hashcode值的字段了,
+否则,对象修改后的hash值与最初存入集合中hash值就不一样了,在这种情况下,即使你的
+contains方法将告诉你找不到该对象了,这也会导致你无法从该hash集合中单独删除当前
+对象,从而造成内存泄漏.
+----------------------2013-05-16---------------------------------------------
+关于java字符串Strig的一些说法:
+String类并没有提供任何修改字符串对象的方法.
+String str = "abc";
+你可以修改字符串变量str(这个引用),让它引用另外一个字符串,但你没法真正改变
+那个"abc"字符串对象.这样做是否会降低效率呢?看起来好像修改代码单元要比创建
+一个新字符串更加简洁.答案是也对,也不对.但是不可变字符串有一个重要的优点:
+编译器可以让字符串共享.为了弄清楚具体的工作方式,可以想象将各种字符串存放在
+公共的存储池中.字符串变量指向存储池中相应的位置.如果赋值一个字符串变量,原始
+字符串和要复制的字符串共享相同的字符.
+总而言之,Java的设计者认为共享带来的高效率远远胜过修改拼接字符串的效率.
+----------------------2013-05-16-------------------------
+
+
+
+----------------------2013-05-15-------------------------
+使用?通配符可以引用其他各种参数化的类型,?通配符定义的变量主要用作引用.
+可以调用与参数化无关的方法,不能调用与参数化有关的方法.
+
+无论使用哪种类型的数组,数组标识符其实只是一个引用,指向在堆中创建的一个真实对象.
+这个数组对象用于保存指向其他对象的引用.只读成员length是数组对象的一部分,事实上
+它是唯一一个可以访问的字段或方法. 对象数组和基本类型数组在使用方式上基本是相同的,
+除了基本类型数组存储的是基本类型的值,而对象数组存储的是那些对象的引用.
+
+你一定要注意区别一个问题,length是数组的大小,数组的大小的意思是这个数组的容量,
+这跟实际数组中有多少元素没有任何关系.
+
+Java要明确每种基本类型所栈存储空间的大小,这并不像其他语言那样随着机器硬件架构变化
+而变化.这种所占存储空间大小不变的特性是Java程序比用其他大多数语言编写的程序更具有
+可移植性的原因之一.
+boolean 类型所占用存储空间大小并没有明确指定,仅定义为能够取字面值true和false.
+byte 8bits, char和short 16bits, int和float 32bits,double和long 64bits.
+
+
+可变参数:即一个方法可以接收的参数个数不确定
+如:public int add(int x,int... args)
+要注意的是:
+1.可变参数只能出现在方法参数列表的最后.
+2.当我们调用可变参数的方法时,编译器会为该可变参数
+implicitly地创建一个数组,而在方法体中以数组的形式
+访问该可变参数.
+----------------------2013-05-15-------------------------
+
+----------------------2013-05-13-------------------------
+
+把一个参数化的类型赋值给原始类型是可以的,同样的,把一个原始
+类型赋值给原始类型也是可以的.
+List<String> str = new ArrayList();
+Vector ct = new Vector<Integer>();
+但是这样就不行,
+Vector<Integer> vt = new Vector<String>();
+//有意思的是下面又是可以的
+List<String> lt = new ArrayList();
+ArrayList<Integer> ay = lt;
+编译器是按照语法一行一行代码进行检查的,上面的式子虽然没什么意义,
+但是却是把原始的赋给参数化的,接着把参数化的赋值给原始类型的.
+
+一般的类和方法,只能使用具体的类型:要么是基本类型,要么是自定义
+的类.如果要编写可以应用于多种类型的代码,这种刻板的限制对代码
+的束缚就会很大.
+
+是否拥有泛型方法,与其所在的类是否是泛型没有关系.
+
+泛型方法使得该方法能够独立于类而产生变化.一下是一个guidline,
+只要你做得到,你就应该尽量使用泛型方法.也就是说,如果使用泛型
+方法可以取代整个类的泛型化,那么就应该只使用泛型方法.因为它可
+以使事情更清楚明白.另外,对于一个static的方法而言,无法访问泛型
+类的类型参数,所以,如果static方法需要使用泛型能力,就必须使其成
+为泛型方法.
+
+值得注意的是,当使用泛型类时必须在创建对象的时候指定泛型参数的值,
+而使用泛型方法时通常不用,因为编译器会为你找出具体的类型,这被称为
+类型参数判断(type argument inference).
+
+根据JDK的文档描述,Class.getTypeParameters()将返回一个TypeVariable
+的对象数组,表示有泛型声明锁声明的参数类型.这好像是在暗示你可能发现
+参数类型的信息,但是,事实上这是不行的.比如
+List<String> t1 = new ArrayList<String>();
+List<Integer> t2 = new ArrayList<Integer>();
+System.out.println(t1.getClass() == t2.getClass());
+结果是true. 当你打印出t1.getClass()可以看到它是
+class java.util.ArrayList.   
+所以可以得到结论:
+在泛型代码内部,无法获得任何有关泛型参数类型的信息.
+
+Java的泛型是使用擦除来实现的,这意味着当你在使用泛型时,任何具体的类型
+信息都将被擦除,你唯一知道的只是你在使用一个对象.所以上面描述的
+List<String>和List<Integer>在运行时事实上是相同的类型.这两种形式
+都将被擦除成它们的"原生"类型List.
+
+泛型的核心动机是使得泛化的客户端可以用非泛化的类库来使用,反之亦然.
+为了实现迁移兼容性,每个类库和应用程序都必须与其他所有的部分是否使用
+了泛型无关.这样,它们必须不具备探测其他类库是否使用了泛型的能力.因此
+某个特定的类库使用了泛型这样的证据就必须被"擦除".
+
+擦除使得现有的非泛化客户端代码能够在不改变代码的情况下继续使用,直到
+客户端准备好用泛型重写这些代码.
+
+同样擦除的代价也是显著的,泛型不能用于显式的引用运行时类型的操作之中.
+例如转型instanceof操作和new表达式.因为所有关于参数的类型信息都丢失了,
+无论何时,当你在编写泛型代码时,必须时刻提醒自己,你只是看起来好像拥有
+有关参数的类型信息而已.
+
+当创建带泛型声明的自定义类时,为该类定义constructor时,constructor还是
+原来的雷鸣,不要增加泛型声明.
+public class Apple<T>
+{
+	public Apple(){}
+}
+
+实际上,泛型对其所有可能的类型参数,都具有同样的行为,从而可以把相同的类
+当成不同的类来处理.鱼刺完全一致的是,类的静态变量和方法在所有的实例间
+共享,所以在静态方法,静态初始化块以及静态变量的声明和初始化中不允许使用
+类型形参.
+
+由于系统中并不会真正生成泛型类,所以instanceof运算符后不能使用泛型类.
+如下面的代码将引发编译时错误.
+Collection c = new ArrayList<String>();
+if(c instanceof List<String>)
+{
+	......
+}
+
+特别要注意的是.如果Foo是Bar的一个子类型(子类或者子接口),而G是具有泛型声明的
+类或接口,那么认为 G<Foo>就是G<Bar>的子类型是傻逼的,注意,注意.
+
+数组和泛型是不同的.假设Foo是Bar的一个子类型,那么Foo[]依然是Bar[]的子类型.
+
+null是所有引用类型的实例.
+
+//可以为泛型指定好多个上限(至多一个父类上限,接口不限制数量)
+public class A <T extends Number & java.io.serializable>
+和类同时继承父类并实现接口类似的是,为类型形参指定多个上限时,
+所有的接口上限必须位于类上限之后.
+
+泛型方法的格式是:
+修饰符 <T,S> 返回值类型   方法名(形参列表)
+{
+	...方法体
+}
+
+泛型方法和类型通配符的区别
+大多数时候,你都可以使用泛型方法来代替类型通配符,如下是
+对于JDK的Collection接口中定义的两个方法:
+public interface Collection<E>
+{
+	boolean containsAll(Collection<?> c);
+	boolean addAll(Collection<? extends E> c);
+}
+可以使用如下泛型方法来替换上面的式子:
+public interface Collection<E>
+{
+	boolean <T> containsAll(Collection<T> c);
+	boolean <T extends E> addAll(Collection<T> c);
+}
+上面的方法使用了<T extends E>泛型形式,这时定义类型形参时设定
+上限(其中E是Collection接口里定义的类型形参,在该接口里可以把E
+当作普通类型使用).
+上面两个方法中类型形参T只使用了一次,类型形参T的唯一效果是可以
+在不同的调用点传入不同的实际形参.对于这种情况,应该使用通配符,
+通配符就是被设计用来支持灵活的子类化的.
+
+泛型方法允许类型形参被用来表示方法的一个或多个参数之间的类型
+依赖关系,或者方法返回值予参数之间的类型依赖关系,如果没有这样
+的类型依赖关系,就不应该使用泛型方法.
+
+类型通配符与显示声明类型形参还有一个显著区别:类型通配符既可以
+在方法签名中定义形参的类型,也可以用于定义变量的类型.
+泛型方法中类型形参必须在对应方法中显示声明.
+
+----------------------2013-05-13-------------------------
+
+
+----------------------2013-05-09------------------------
+String对象是不可变的,你可以给一个String对象添加
+任意多的别名.因为String对象具有只读特性,所以指向
+它的任何引用都不可能改变它的值.因此也就不会对其他
+引用有什么影响.
+不可变性会带来一定的效率问题.为String对象重载的
+"+"操作符就是一个例子.重载的意思是说,一个操作符在
+应用于特定的类时,被赋予了特殊的意义.(用于String的
+"+"和"+="是Java中仅有的两个重载过的操作符.)
+
+Object类的toString()方法默认打印的是:
+getClass().getName() + '@' + Integer.toHexString(hashCode())
+这儿有一个无意识递归陷阱.比如你希望你的类的toString()方法
+打印出对象的内存地址,不能傻逼呵呵的用this.
+public class Dog
+{
+	@Override public String toString()
+	{
+		return "Dog:" + this +"\n";
+	}
+}
+当你调用Dog的toString方法时,一定会抛出异常的.
+这里发生了自动类型转换,由Dog类转换成String类型.
+因为编译器看到一个String对象后面跟着一个"+",而
+后面的对象又不是String.于是编译器试着将this转换
+成一个String.它怎么转换呢,正是通过调用this上的
+toString()方法,于是就发生递归调用了.
+如果你真要打印对象的内存地址的话,应该调用的是
+Object.toString()方法,这才是负责此任务的方法.
+所以不应该用this,而应该是super.toString();
+
+
+运行时类型信息使得你可以在程序运行时发现和使用类型信息.
+
+RTTI(RunTime Type Identification)
+
+程序能够使用基类的引用来检查这些引用所指的
+对象的实际派生类型.
+
+JAVA是如何让我们在运行时识别对象和类型信息的?
+一种是传统的RTTI,它假定我们在编译时已经知道了
+所有的类型,另一种是反射机制,它允许我们在运行
+时发现和使用类的信息.
+
+面向对象编程中基本的目的是:让代码只manipulate对基类的引用.
+这样,如果添加一个新类来扩展程序,就不会影响到原来的代码.
+
+这是RTTI的基本使用形式,因为在Java中,所有的类型
+转换都是在运行时进行正确性检查的.这也是RTTI的
+名字含义,在运行时,识别一个对象的类型.
+
+要理解RTTI在Java中的工作原理,首先必须知道类型信息
+在运行时是如何表示的.这项工作是由称为Class对象的
+一个特殊对象完成的,它包含了与类有关的信息.事实上,
+Class对象就是用来创建类的所有的"常规"对象的.Java
+使用Class对象来执行其RTTI.
+
+类是程序的一部分,每个类都有一个Class对象与之对应.
+in other word,每当编写并编译了一个新类,就会产生
+一个Class对象(更确切的说,是被保存在一个同名的
+.class文件中).
+
+所有类都是在对其第一次使用时,动态加载到JVM中的.当
+程序创建第一个对类的静态成员的引用时,就会加载该类.
+这个证明构造器也是类的静态方法,即使在构造器之前并
+没有使用static关键字.因此使用new操作符创建类的新的
+对象也会被当作对类的静态成员的引用.
+
+Java程序在它开始运行之前并非被完全加载,其各个部分是在必需时才被加载的.
+
+
+获取Class对象的引用的两种方式
+1.类字面常量.如
+Class cls = Person.class;
+2.Class.forName("类全限定名"),如
+Class cls = Class.forName("com.mysql.jdbc.Driver");
+上述两种方式都能获取相应类的Class对象的引用,不同的是
+类字面常量方式并不会导致该类被初始化.而Class.forName()
+方式会使得该类被初始化.亦即比如说该类有静态代码块就将
+被执行.注意,这里是类初始化不是对象初始化.
+
+为了使用类必须做的3个步骤:
+1.加载,这是由类加载器执行的.该步骤将查找字节码(
+通常在classpath所指定的路径中查找,当然这并不必须,你还
+可以从网络down不是).
+2.链接.在链接阶段将验证类中的字节码,为静态域分配存储空间.
+并且如果必需的话,将解析这个类创建的对其他类的所有引用.
+3.初始化.如果该类具有超类,则对其初始化,执行静态初始化器
+和静态初始化块.值得注意的是,初始化被延迟到了对静态方法,
+或者非 常数的静态域进行首次调用的时候才执行.
+----------------------2013-05-09--------------------------
+关于异常中的try catch finally
+一个try只能对应一个finally但可以对应多个catch.
+你也可以在一个try块里面再包含另外的try块,该try
+块又是另外一个try了,所以可以有另外一个finally.
+比如说这样的情况.
+FileInputStream的构造方法声明了它会抛出一个
+FileNotFoundException,也就是说只要你在构造
+这个对象的时候没有抛出FileNotFound异常你这个
+对象就被创建成功了,也即你的流就被打开了,这时
+一般你可能会在创建这个fis对象的try块后面对应
+写一个finally块用于关闭fis流.这样貌似是没有
+问题的.但是如果程序抛出了FileNotFound异常,
+就是说这个fis对象根本就没有被成功创建,也即
+你后面的finally块确无论如何都要去关闭fis流.
+这就非常傻逼了.所以良好的改进方案是在创建
+该fis对象的大的try块中再来一个小的try块,这个
+小try块专门catch FileNotFound异常.或者写成
+下面这样也是可以的.只是你要注意,一个try只能
+对应一个finally就是了.
+
+try
+	{
+	
+	InputStream fis = new FileInputStream("e:\\a");
+	
+	try
+	{
+		fis.read();
+	}
+	catch (IOException e)
+	{
+	e.printStackTrace();
+	}
+	finally
+	{
+		try
+			{
+				fis.close();
+			}
+			catch (IOException e)
+			{
+			}
+	}
+	}
+	catch (FileNotFoundException e)
+	{
+	}
+
+-------------------------------------------
+关于继承和组合
+到底应该使用继承还是组合,一个最清晰的判断办法就是问问你自己是否需要从导出类
+向基类向上转型,如果需要,则继承是有必要的.
+
+关于final关键字
+对于编译器常量这种情况,编译器可以将该常量值带入任何可能用到它的计算式中,也就是说,
+可以在编译时执行计算式,从而减轻运行时负担,在Java中这类常量必须是基本数据类型,
+并且以关键字final表示.在对这个常量进行定义的时候,必须对其进行赋值.
+
+一个既是static的又是final的域只占用一段不能改变的存储空间.
+
+当对象的引用不是基本数据类型又运用了final时,其含义会有一点令人蛋疼.
+对于基本类型final使数值恒定不变,而对于对象引用,final使reference保持不变.
+一旦引用被初始化指向一个对象,就无法再把它改为指向另一个对象,
+然后对象其自身是可以改变的.比如说final StringBuffer.
+
+public static final int VALUE = 0x12;
+定义为public则可以被用于包之外,定义为static则强调丫是类相关的,只有一份.
+定义为final,则说明它是一个常量(编译时就可确定值.)
+但是你不能傻逼呵呵的就以为final的就一定在编译时就能确定值.
+private static Random rand = new Random(47);
+private static final int one = rand.nextInt(20);
+private static final int two = rand.nextInt(20);
+这里one和two的值就不相等.
+
+
+final方法
+使用final方法的原因有两个.
+第一个原因是将该方法锁定,以防止任何继承类修改它的含义.
+
+final和private关键字
+事实上,类中的所有的private方法都implicit指定为是final的.
+由于无法取用private方法,所以也就无法覆盖它.
+可以对private方法添加final修饰词.但这并不能给该方法增添任何额外的意义.
+
+"覆盖"只有在某方法是基类的接口的一部分时才会出现.
+即,必须能将一个对象向上转型为它的基本类型并调用相同的方法.
+所以如果某个方法为private的,那么它就不是基类接口的一部分.
+它仅是一些隐藏于类中的程序代码,只不过是具有相同的名称而已.
+
+程序在加载时对象中所有的基本数据类型都会被设为默认值,对象引用被设为null,
+这是通过将对象内存设为二进制零值而一举生成的.
+
+
+当要实现一个接口时,在接口中被定义的方法必须被定义为public的.否则,
+它们将只能得到默认的包访问权限,这样在方法被继承的过程中,其可访问
+性就被降低了,这是Java编译器所不允许的.
+
+-------------------------------------------------------------
+像这样创建一个能够根据所传递的参数对象不同,而具有不同行为的方法,
+被称为策略模式.这类方法包含所要执行的算法中固定不变的部分,而策略
+包含变化的部分.策略就是传递进去的参数对象,它包含要执行的代码.
+public class Apply
+{
+	public static void process(Processor p, Object s)
+	{
+		System.out.println("Using processor" + p.name());
+		System.out.println(p.process(s));
+	}
+
+	public static String s = "Disagreement with beliefs is
+							  by definition incorrect";
+
+	public static void main(String[] args)
+	{
+		process(new Upcase(), s);
+		process(new Downcase(), s);
+		process(new Splitter(), s);
+	}
+}
+
+class Processor
+{
+	public String name()
+	{
+		return this.getClass().getSimpleName();
+	}
+
+	Object process(Object input)
+	{
+		return input;
+	}
+}
+
+class Upcase extends Processor
+{
+	String process(Object input)
+	{
+		return ((String) input).toUpperCase();
+	}
+}
+
+class Downcase extends Processor
+{
+	String process(Object input)
+	{
+		return ((String) input).toLowerCase();
+	}
+}
+
+class Splitter extends Processor
+{
+	String process(Object input)
+	{
+		return Arrays.toString(((String) input).split(" "));
+	}
+}
+
+也可以把Processor改写成一个接口,使它的process方法称为抽象方法.
+这样不同的类只要实现了该接口可以根据自己的需要自己实现.也可以
+先用写一个抽象基类,该基类包含一个process的抽象方法.不同的类去
+继承该抽象基类,根据需要自己实现自己的process方法.
+-------------------------------------------------------------
+
+
+注册JDBC驱动的方式:
+1.Class.forName("com.mysql.jdbc.Driver");
+推荐这种方式，不会对具体的驱动类产生依赖。
+2.DriverManager.registerDriver(com.mysql.jdbc.Driver);
+会造成DriverManager中产生两个一样的驱动，并会对具体的驱动类产生依赖。
+3.System.setProperty("jdbc.drivers", "driver1:driver2");
+虽然不会对具体的驱动类产生依赖；但注册不太方便，所以很少使用。 
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+1.利用工厂模式对DAO层解耦
+就是要消除UserDao dao = new UserDaoMySqlIml();
+这样的代码,把后面的实现类用反射来做,然后究竟要哪个类来实现,
+则从properties文件中读取.
+
+public class UserDaoFactory
+{
+	private static UserDao userdao = null;
+	private static UserDaoFactory instance = new UserDaoFactory();
+	private UserDaoFactory()
+	{
+		try
+		{
+			InputStream input = new FileInputStream
+			(new File("src/daoconfig.properties"));
+			Properties prop = new Properties();
+			prop.load(input);
+			String value = prop.getProperty("userDao");
+			Class<?> cls = Class.forName(value);
+			userdao = (UserDao) cls.newInstance();
+		}
+		catch (Exception e)
+		{
+			throw new ExceptionInInitializerError(e);
+		}
+	}
+
+	public static UserDaoFactory getInstance()
+	{
+		return instance;
+	}
+
+	public UserDao getUserDao()
+	{
+		return userdao;
+	}
+}
++++++++++++++++++++++++++++++++++++++++++++++++++
+2.关于JDBC的CURD的抽象,对于数据库来说只有UPDATE和QUERY操作.
+public abstract class AbstractDao extends DefaultDao
+{
+	public int update(String sql, Object[] args)
+	{
+		int result = 0;
+		{
+			Connection conn = null;
+			PreparedStatement psmt = null;
+			try
+			{
+				conn = getConnection();
+				psmt = conn.prepareStatement(sql);
+				for (int i = 0; args != null && i < args.length; i++)
+					psmt.setObject(i + 1, args[i]);
+				result = psmt.executeUpdate();
+			}
+			catch (Exception e)
+			{
+				throw new DaoException(e.getMessage(), e);
+			}
+			finally
+			{
+				Utils.free(null, psmt, conn);
+			}
+		}
+		return result;
+	}
+}
+
+模板模式:假如说做一件事有几个步骤,这其中有几个步骤是不明确的,
+这个时候,可以把这些不明确的步骤搞成抽象类,让实现它的子类去完成,
+这种方式就是模板模式.你还可以想一下servlet的实现,容器首先调用的
+是service方法,然后看哪个servlet到底是哪种请求,继而调用doXXX().
+//抽象的JDBC的Query操作.
+abstract public  class AbstractFind extends DefaultDao
+{
+	protected Object query(String sql,Object[] args)
+	{
+		Object obj = null;
+		Connection conn = null;
+		PreparedStatement psmt = null;
+		ResultSet rs = null;
+		try
+		{
+			conn = getConnection();
+			psmt = conn.prepareStatement(sql);
+			for(int i = 0; i < args.length; i++)
+			{
+				psmt.setObject(i+1, args[i]);
+			}
+			rs = psmt.executeQuery();
+
+			while(rs.next())
+			obj = rowMappingObj(rs);
+		}catch(Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+		finally
+		{
+			Utils.free(rs, psmt, conn);
+		}
+		return obj;
+	}
+	protected abstract Object rowMappingObj(ResultSet rs); 
+}
+++++++++++++++++++++++++++++++++++
+
+
+
+++++++++++++++++++++++++++++++++++
+3.利用ResultSetMetaData元数据和泛型自己完成表和对象的mapping
+public class ORMTest
+{
+	public static void main(String[] args) throws Exception
+	{
+		List<User> us = fillData("select * from user where id >1", User.class);
+		for(User li: us)
+		{
+			System.out.println(li);
+		}
+	}
+
+	static String getSetter(String str)
+	{
+		String result = "";
+		result = "set" + (str.charAt(0) + "").toUpperCase() + str.substring(1);
+		return result;
+	}
+
+	private static <T> List<T> fillData(String sql, Class<T> cls)
+	{
+		Connection conn = null;
+		PreparedStatement psmt = null;
+		ResultSet rs = null;
+		T t = null;
+		List<T> lists = new ArrayList<T>();
+		
+		try
+		{
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection
+			("jdbc:mysql://localhost:3306/th", "root", "lightman");
+			
+			psmt = conn.prepareStatement(sql);
+			rs = psmt.executeQuery();
+
+			ResultSetMetaData rsmt = rs.getMetaData();
+			int count = rsmt.getColumnCount();
+			String cns[] = new String[count];
+			for (int i = 1; i <= count; i++)
+			{
+				cns[i - 1] = rsmt.getColumnName(i);
+			}
+
+			Method[] mds = cls.getMethods();
+			while (rs.next())
+			{
+				t = cls.newInstance();
+				for (int i = 0; i < cns.length; i++)
+				{
+					for (Method md : mds)
+					{
+						String setter = getSetter(cns[i]);
+						String method_name = md.getName();
+
+						if (setter.equals((method_name)))
+						{
+							Object value = rs.getObject(cns[i]);
+							md.invoke(t, value);
+						}
+					}
+				}
+				lists.add(t);
+			}
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+		finally
+		{
+			Utils.free(rs, psmt, conn);
+		}
+		return lists;
+	}
+}
+++++++++++++++++++++++++++++++++++
+传入接口这种方式更好的地方在于,如果你只是想查询一列name,完全没有
+必要先查出对象在返回该对象的name值.这里的mapping方法你可以按需实现.
+这就是策略模式了.因为这个映射有不同的策略.
+public class AbsQueryUserInterface
+{
+	public Object query(String sql, Object[] args,MappingRow mr)
+	{
+		Connection conn = null;
+		PreparedStatement psmt = null;
+		ResultSet rs = null;
+		Object obj = null;
+		try
+		{
+			conn = Utils.getConn();
+			psmt = conn.prepareStatement(sql);
+			for (int i = 0; i < args.length; i++)
+				psmt.setObject(i + 1, args[i]);
+			rs = psmt.executeQuery();
+
+			if (rs.next())
+			obj = mr.mapping(rs);
+			return obj;
+		}
+		catch (SQLException e)
+		{
+			throw new RuntimeException(e);
+		}
+		finally
+		{
+			Utils.free(rs, psmt, conn);
+		}
+	}
+}
+ 
+ interface MappingRow
+ {
+	Object mapping(ResultSet rs) throws SQLException;
+ }
+ //看下面已经没有继承了而是使用了两个类的组合,这样多么灵活啊.
+ class TestAbsMap
+ {
+	AbsQueryUserInterface aqi = new AbsQueryUserInterface();
+ 
+	public static void main(String[] args)
+	{
+		String sql = "select name,money from user where id = ?";
+		Object[] obj = new Object[]{1};
+		Object[] result = (Object[])aqi.query(sql, obj, new MappingRow()
+		{
+			@Override
+			public Object mapping(ResultSet rs)
+			{
+				try
+				{
+					String name = rs.getString("name");
+					float money = rs.getFloat("money");
+					return new Object[]{name,money};
+				}
+				catch(Exception e)
+				{
+				}
+				return null;
+			}
+		});
+		System.out.println(Arrays.toString(result));
+	}
+ }
